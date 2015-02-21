@@ -23,21 +23,34 @@ module.exports = function(io) {
 				tweets: tweetArray,
 				showForm: true
 			})
-
-		});
+		})
 
 	})
 
 	router.get('/users/:name', function(req, res) {
 		// var tweets = tweetBank.find({name: req.params.name})
 
-		
+		var userName = req.params.name
 
-		res.render('index', {
-			tweets: tweets,
-			formName: req.params.name,
-			showForm: true
+		Tweet.findAll({ include: [ User ] })
+		.then(function(tweets) {
+			tweets
+			.find({ where: {name: userName} })
+			.then(function(tweets) {
+				for (var i = 0; i < tweets.length; i++) {
+					tweetArray.push(tweets[i].dataValues);
+				}
+
+				res.render('index', {
+					tweets: tweetArray,
+					formName: userName,
+					showForm: true
+				})
+
+			});
 		})
+
+		
 	})
 
 	router.get('/users/:name/tweets/:id', function(req, res){
