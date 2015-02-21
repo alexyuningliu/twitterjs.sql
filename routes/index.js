@@ -1,17 +1,28 @@
 var express = require('express')
 var tweetBank = require('../tweetBank')
 
+//Integration with Models
+var User = require('../models/index.js').User;
+var Tweet = require('../models/index.js').Tweet;
+
 module.exports = function(io) {
 	var router = express.Router()
 
 	router.get('/', function(req, res) {
-		var tweets = tweetBank.list()
+		// var tweets = tweetBank.list()
+		var tweetArray = [];
+		
+		var tweets = Tweet.findAll().then(function(tweets) {
+			for (var i = 0; i < tweets.length; i++) {
+				tweetArray.push(tweets[i].dataValues);
+			}
+		});
+
 		res.render('index', {
-			tweets: tweets,
+			tweets: tweetArray,
 			showForm: true
 		})
-		// get tweets
-		//render index
+
 	})
 
 	router.get('/users/:name', function(req, res) {
