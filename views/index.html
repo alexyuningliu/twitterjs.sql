@@ -30,8 +30,8 @@
         <div class="tweetbox">
           <img />
           <div class="content">
-            <a class="by" href="/users/{{ tweet.name }}">{{ tweet.UserId }}</a><br>
-            <a href="/users/{{ tweet.name }}/tweets/{{ tweet.id }}">{{tweet.tweet}}</a>
+            <b><a class="by" href="/users/{{ tweet.User.dataValues.name }}">{{ tweet.User.dataValues.name }}</a></b><br>
+            <a href="/users/{{ tweet.User.dataValues.name }}/tweets/{{ tweet.id }}">{{tweet.tweet}}</a>
           </div>
         </div>
       {% endfor %}

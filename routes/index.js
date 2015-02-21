@@ -9,24 +9,30 @@ module.exports = function(io) {
 	var router = express.Router()
 
 	router.get('/', function(req, res) {
-		// var tweets = tweetBank.list()
 		var tweetArray = [];
-		
-		var tweets = Tweet.findAll().then(function(tweets) {
+
+
+
+		Tweet.findAll({ include: [ User ] })
+		.then(function(tweets) {
 			for (var i = 0; i < tweets.length; i++) {
 				tweetArray.push(tweets[i].dataValues);
 			}
-		});
 
-		res.render('index', {
-			tweets: tweetArray,
-			showForm: true
-		})
+			res.render('index', {
+				tweets: tweetArray,
+				showForm: true
+			})
+
+		});
 
 	})
 
 	router.get('/users/:name', function(req, res) {
-		var tweets = tweetBank.find({name: req.params.name})
+		// var tweets = tweetBank.find({name: req.params.name})
+
+		
+
 		res.render('index', {
 			tweets: tweets,
 			formName: req.params.name,
