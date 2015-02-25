@@ -29,28 +29,24 @@ module.exports = function(io) {
 
 	router.get('/users/:name', function(req, res) {
 		// var tweets = tweetBank.find({name: req.params.name})
-
+		var tweetArray = [];
 		var userName = req.params.name
 
-		Tweet.findAll({ include: [ User ] })
+		User.findAll({ include: [ {model: Tweet, required: true}], where: {name: userName}})
 		.then(function(tweets) {
-			tweets
-			.find({ where: {name: userName} })
-			.then(function(tweets) {
-				for (var i = 0; i < tweets.length; i++) {
-					tweetArray.push(tweets[i].dataValues);
-				}
-
-				res.render('index', {
-					tweets: tweetArray,
-					formName: userName,
-					showForm: true
-				})
-
-			});
+			console.log(tweets.length);
+			console.log(tweets[0].Tweets);
+			for (var i = 0; i < tweets[0].Tweets.length; i++) {
+				console.log("pushed!")
+				tweetArray.push(tweets[0].Tweets[i].dataValues);
+			}
+			console.log(tweetArray);
+			res.render('index', {
+				tweets: tweetArray,
+				formName: userName,
+				showForm: true
+			})
 		})
-
-		
 	})
 
 	router.get('/users/:name/tweets/:id', function(req, res){
