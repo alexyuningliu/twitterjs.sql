@@ -58,10 +58,30 @@ module.exports = function(io) {
 	})
 
 	router.post('/submit', function(req, res){
-		tweetBank.add(req.body.name, req.body.text)
-		var all_tweets = tweetBank.list()
-		var last_tweet = all_tweets[all_tweets.length-1]
-		io.sockets.emit('new_tweet', last_tweet)
+		var userName = req.body.name;
+		var tweetText = req.body.text;
+		var tableUserId = "";
+		//(1) See if userName already exists in Users table
+		// (1a) IF it does, THEN get the ID of the User and RETURN
+		// (1b) ELSE CREATE userName in Users table and return User ID
+		//(2) Create a new tweetText in the Tweet table with a userId from 1a/1b and an auto-incremented ID
+
+		User.findOrCreate({ where: {name: userName}, defaults: {} })
+		.then(function(user) {
+			// console.log(user[0].dataValues.id);
+			tableUserId = user[0].dataValues.id;
+			console.log("WROTE TO USER TABLE " + tableUserId);
+			Tweet.create({UserId: tableUserId, tweet: tweetText});
+			console.log("WROTE TO TWEET TABLE, NEW TWEET " + tweetText);
+			}
+		)
+
+		//OLD CODE!!!
+
+		// tweetBank.add(req.body.name, req.body.text)
+		// var all_tweets = tweetBank.list()
+		// var last_tweet = all_tweets[all_tweets.length-1]
+		// io.sockets.emit('new_tweet', last_tweet)
 		res.redirect(req.body.redirectUrl)
 	})
 
